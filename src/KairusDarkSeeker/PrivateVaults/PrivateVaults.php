@@ -94,19 +94,22 @@ class PrivateVaults extends PluginBase implements Listener {
 		$cfg->save();
 	}
 
-	public function loadVault(Player $player, $number) {
-		$itemblock = Item::fromString("chest");
-		$block = $itemblock->getBlock();
-		$player->getLevel()->setBlock(new Vector3($player->getX(), 128, $player->getZ()), $block);
-		$nbt = new CompoundTag("", [
-			new ListTag("Items", []),
-			new StringTag("id", Tile::CHEST),
-			new IntTag("x", $player->getX()),
-			new IntTag("y", $player->getY()),
-			new IntTag("z", $player->getZ())
-		]);
-		$nbt->Items->setTagType(NBT::TAG_Compound);
-		$tile = Tile::createTile("Chest", $player->getLevel()->getChunk($player->getX() >> 4, $player->getZ() >> 4), $nbt);
+	
+public function loadVault(Player $player, $number) {
+		$x=$player->getX();
+		$y=$player->getY() - 3;
+		$z=$player->getZ();
+		$block = Block::get(54);
+  $player->getLevel()->setBlock(new Vector3($player->x, $player->y - 2, $player->z), $block, true, true);
+  $nbt = new CompoundTag("", [
+    new ListTag("Items", []),
+    new StringTag("id", Tile::CHEST),
+    new IntTag("x", floor($player->x)),
+    new IntTag("y", floor($player->y) - 2),
+    new IntTag("z", floor($player->z))
+  ]);
+  $nbt->Items->setTagType(NBT::TAG_Compound);
+  $tile = Tile::createTile("Chest", $player->getLevel(), $nbt);
 		if($player instanceof Player) {
 			$player = $player->getName();
 		}
